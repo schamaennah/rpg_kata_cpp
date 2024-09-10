@@ -1,0 +1,72 @@
+# This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
+# See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
+name: Compile And Tests All Commits
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4  # Correctly using the checkout action
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+
+      - name: Get list of commits
+        id: get_commits
+        run: |
+          echo "I am getting the commits"
+          # Get the list of commits in the branch and store them in a variable
+          $commits = git log --pretty=format:'%H' --reverse origin/main
+          echo "The commits are: $commits"
+          # Set the output variable for later use
+          echo "::set-output name=commits::$commits"
+          #echo "commits=$commits" >> $GITHUB_OUTPUT
+
+      - name: Process each commit
+        run: |
+          # Get the commits from the output variable
+          # $commits = "${{ steps.get_commits.outputs.commits }}"
+          $commits = "${{ steps.get_commits.outputs.commits }}"
+          echo "The commits are: $commits"
+
+          # Split the commits into an array
+          $commitArray = $commits -split ' '
+
+          # Loop through each commit
+          foreach ($commit in $commitArray) {
+            echo "Processing commit: $commit"
+            # Here you can add the steps you want to execute for each commit
+            # For example, you could check out the commit and run tests
+            git checkout $commit
+            # Run your commands here, e.g., npm install, npm test, etc.
+            # npm install
+            # npm test
+            cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+            cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+            $testResult = &"${{github.workspace}}/build/tests/${{env.BUILD_TYPE}}/rpg_kata_tests.exe" 2>&1
+
+            # Check if the tests failed
+            if ($LASTEXITCODE -ne 0) {
+              echo "Tests failed for commit: $commit"
+              echo "Error output:"
+              echo $testResult
+              break  # Exit the loop on test failure
+            } else {
+              echo "Tests passed for commit: $commit"
+            }
+          }
+          echo "End of the story"

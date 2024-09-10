@@ -1,0 +1,2 @@
+namespace rpg_kata
+{}
