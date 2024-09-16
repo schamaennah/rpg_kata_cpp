@@ -1,5 +1,6 @@
 #pragma once
 
+#include "character_status.hpp"
 #include "health.hpp"
 #include "level.hpp"
 
@@ -7,7 +8,8 @@ namespace rpg_kata
 {
 struct character
 {
-    health health;
-    level  level;
+    health           health;
+    level            level;
+    character_status status;
 };
 } // namespace rpg_kata
