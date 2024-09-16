@@ -28,10 +28,15 @@ constexpr status status(const health& self)
     return status::alive;
 }
 
-constexpr health& operator+=(health& health, const healing& healing)
+constexpr health& operator+=(health& health_to_increase, const healing& healing)
 {
-    health.value += healing.value;
-    return health;
+    if (status(health_to_increase) == status::dead)
+    {
+        return health_to_increase;
+    }
+
+    health_to_increase.value += healing.value;
+    return health_to_increase;
 }
 
 } // namespace rpg_kata
