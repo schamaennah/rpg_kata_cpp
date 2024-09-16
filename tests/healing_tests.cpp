@@ -36,6 +36,21 @@ SCENARIO("Healing Health", "[healing]")
             }
         }
     }
+    GIVEN("Target health of 950")
+    {
+        auto target_health = health{950};
+
+        WHEN("Healing would exeed Health 1000")
+        {
+            constexpr auto exeeding_healing = healing{100};
+            target_health += exeeding_healing;
+
+            THEN("Health is capped at 1000")
+            {
+                REQUIRE(target_health == health{1000});
+            }
+        }
+    }
 }
 
 } // namespace rpg_kata::tests

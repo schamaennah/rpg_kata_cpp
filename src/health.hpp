@@ -10,7 +10,22 @@
 
 namespace rpg_kata
 {
-using health = value_wrapper<new_type, 1000U>;
+
+using health_base = value_wrapper<new_type, 1000U>;
+
+class health : health_base
+{
+public:
+    constexpr health() = default;
+
+    explicit constexpr health(const unsigned value)
+        : health_base{std::min(value, initial_value)}
+    {}
+
+    bool                     operator==(const health&) const = default;
+    friend constexpr health& operator-=(health&, const damage&);
+    friend constexpr health& operator+=(health&, const healing&);
+};
 
 constexpr health& operator-=(health& health, const damage& damage)
 {
@@ -35,7 +50,9 @@ constexpr health& operator+=(health& health_to_increase, const healing& healing)
         return health_to_increase;
     }
 
-    health_to_increase.value += healing.value;
+    health_to_increase.value
+        = std::min(health_to_increase.value + healing.value, health::initial_value);
+
     return health_to_increase;
 }
 
