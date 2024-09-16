@@ -5,6 +5,6 @@
 
 namespace rpg_kata
 {
-using health = value_wrapper<new_type, 1000U>;
+using level = value_wrapper<new_type, 1U>;
 
 } // namespace rpg_kata

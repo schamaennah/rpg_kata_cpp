@@ -15,6 +15,10 @@ SCENARIO("New Characters", "[character]")
         {
             REQUIRE(new_character.health == health{1000});
         }
+        THEN("Its Level is 1")
+        {
+            REQUIRE(new_character.level == level{1});
+        }
     }
 }
 
