@@ -10,6 +10,6 @@ struct character
 {
     health           health;
     level            level;
-    character_status status;
+    character_status status = character_status::alive;
 };
 } // namespace rpg_kata

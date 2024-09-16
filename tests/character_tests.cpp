@@ -19,6 +19,10 @@ SCENARIO("New Characters", "[character]")
         {
             REQUIRE(new_character.level == level{1});
         }
+        THEN("It's Alive")
+        {
+            REQUIRE(new_character.status == character_status::alive);
+        }
     }
 }
 
