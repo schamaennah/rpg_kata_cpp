@@ -7,7 +7,7 @@
 
 ## Requirements
 
-- [ ] Characters can be created
+- [X] Characters can be created
 - [ ] New characters have 1000 Health
 - [ ] New characters start from level 1
 - [ ] Characters can be Alive or Dead
