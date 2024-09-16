@@ -13,7 +13,7 @@
 - [X] Characters can be Alive or Dead
 - [X] New characters are Alive
 - [X] Characters can Deal 1 Damage to Characters
-- [ ] Damage is subtracted from Health
+- [X] Damage is subtracted from Health
 - [ ] When damage received exceeds current Health, Health becomes 0 and the character is now Dead
 - [ ] A Character can Heal a Character of 1 Health
 - [ ] Dead characters cannot be healed

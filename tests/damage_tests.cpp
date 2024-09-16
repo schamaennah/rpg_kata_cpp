@@ -1,19 +1,25 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <damage.hpp>
+#include <deal_damage.hpp>
+#include <health.hpp>
 
 namespace rpg_kata::tests
 {
 
 SCENARIO("Dealing Damage", "[damage]")
 {
-    WHEN("Damage is Created")
+    GIVEN("Target health of 50")
     {
-        constexpr auto new_damage = damage{};
+        auto target_health = health{50};
 
-        THEN("Damage is 1")
+        WHEN("Dealing Damage")
         {
-            REQUIRE(new_damage == damage{1});
+            deal_damage(target_health);
+
+            THEN("1 Damage is subtracted from target Health")
+            {
+                REQUIRE(target_health == health{49});
+            }
         }
     }
 }
