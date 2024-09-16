@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <character.hpp>
+#include <status.hpp>
 
 namespace rpg_kata::tests
 {
@@ -21,7 +22,7 @@ SCENARIO("New Characters", "[character]")
         }
         THEN("It's Alive")
         {
-            REQUIRE(new_character.status == character_status::alive);
+            REQUIRE(status(new_character.health) == status::alive);
         }
     }
 }

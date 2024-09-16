@@ -2,7 +2,7 @@
 
 namespace rpg_kata
 {
-enum struct character_status
+enum struct status
 {
     alive,
     dead,
