@@ -38,6 +38,16 @@ SCENARIO("Dealing Damage", "[damage]")
             }
         }
     }
+    WHEN("A Character deals damage to itself")
+    {
+        auto new_character = character{};
+        deal_damage(new_character, new_character);
+
+        THEN("Nothing happens")
+        {
+            REQUIRE(new_character.health == health{1000});
+        }
+    }
 }
 
 } // namespace rpg_kata::tests
