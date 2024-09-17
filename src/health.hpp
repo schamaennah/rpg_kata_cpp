@@ -3,6 +3,7 @@
 #include "damage.hpp"
 #include "healing.hpp"
 #include "new_type.hpp"
+#include "non_negative_double.hpp"
 #include "status.hpp"
 #include "value_wrapper.hpp"
 
@@ -10,16 +11,15 @@
 
 namespace rpg_kata
 {
-
-using health_base = value_wrapper<new_type, 1000U>;
+using health_base = value_wrapper<new_type, non_negative_double, 1000.>;
 
 class health : health_base
 {
 public:
     constexpr health() = default;
 
-    explicit constexpr health(const unsigned value)
-        : health_base{std::min(value, initial_value)}
+    explicit constexpr health(const double value)
+        : health_base{std::min(non_negative_double{value}, initial_value)}
     {}
 
     bool                     operator==(const health&) const = default;
@@ -29,7 +29,7 @@ public:
 
 constexpr health& operator-=(health& health, const damage& damage)
 {
-    health.value -= std::min(health.value, damage.value);
+    health.value -= damage.value;
     return health;
 }
 

@@ -2,14 +2,15 @@
 
 namespace rpg_kata
 {
-template <typename tag_type, unsigned initial_value>
+template <typename tag_type, typename value_type = unsigned, auto initial_value = value_type{0}>
 struct value_wrapper
 {
-    static constexpr unsigned initial_value = initial_value;
+    using type                          = value_type;
+    static constexpr type initial_value = type{initial_value};
 
-    unsigned value = initial_value;
+    type value = initial_value;
 
-    bool operator==(const value_wrapper&) const = default;
+    auto operator<=>(const value_wrapper&) const = default;
 };
 
 } // namespace rpg_kata
