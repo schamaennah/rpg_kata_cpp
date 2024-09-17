@@ -16,7 +16,7 @@ SCENARIO("Dealing Damage", "[damage]")
 
         WHEN("Dealing Damage")
         {
-            deal_damage(target_health);
+            deal_damage(target_health, {}, {});
 
             THEN("1 Damage is subtracted from target Health")
             {
@@ -46,6 +46,18 @@ SCENARIO("Dealing Damage", "[damage]")
         THEN("Nothing happens")
         {
             REQUIRE(new_character.health == health{1000});
+        }
+    }
+    WHEN("The target is 5 or more levels above the attacker")
+    {
+        constexpr auto attacker_level = level{5};
+        constexpr auto target_level   = level{10};
+        auto           target_health  = health{10};
+        deal_damage(target_health, attacker_level, target_level);
+
+        THEN("The dealt damage is half")
+        {
+            REQUIRE(target_health == health{9.5});
         }
     }
 }

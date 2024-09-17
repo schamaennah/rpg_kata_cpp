@@ -1,15 +1,20 @@
 #pragma once
 
+#include <compare>
+
 namespace rpg_kata
 {
-template <typename tag_type, unsigned initial_value>
+template <typename tag_type,
+          typename value_type      = unsigned,
+          value_type initial_value = value_type{0}>
 struct value_wrapper
 {
-    static constexpr unsigned initial_value = initial_value;
+    using type                          = value_type;
+    static constexpr type initial_value = initial_value;
 
-    unsigned value = initial_value;
+    type value = initial_value;
 
-    bool operator==(const value_wrapper&) const = default;
+    std::partial_ordering operator<=>(const value_wrapper&) const = default;
 };
 
 } // namespace rpg_kata

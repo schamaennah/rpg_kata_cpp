@@ -5,6 +5,6 @@
 
 namespace rpg_kata
 {
-using healing = value_wrapper<new_type, unsigned, 1U>;
+using percentage = value_wrapper<new_type, double>;
 
 } // namespace rpg_kata

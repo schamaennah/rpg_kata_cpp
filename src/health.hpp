@@ -11,14 +11,14 @@
 namespace rpg_kata
 {
 
-using health_base = value_wrapper<new_type, 1000U>;
+using health_base = value_wrapper<new_type, double, 1000.>;
 
 class health : health_base
 {
 public:
     constexpr health() = default;
 
-    explicit constexpr health(const unsigned value)
+    explicit constexpr health(const type value)
         : health_base{std::min(value, initial_value)}
     {}
 
