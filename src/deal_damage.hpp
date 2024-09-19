@@ -13,11 +13,18 @@ inline void deal_damage(health&         target_health,
                         const level&    target_level,
                         const position& attacker_position,
                         const position& target_position,
-                        const range&    attacker_max_range)
+                        const range&    attacker_max_range,
+                        const factions& attacker_factions,
+                        const factions& target_factions)
 {
     const auto range = distance(attacker_position, target_position);
 
     if (range > attacker_max_range)
+    {
+        return;
+    }
+
+    if (are_allied(attacker_factions, target_factions))
     {
         return;
     }
@@ -55,7 +62,9 @@ constexpr void deal_damage(const character& attacker, character& target)
                 target.level,
                 attacker.position,
                 target.position,
-                attacker.max_range);
+                attacker.max_range,
+                attacker.factions,
+                target.factions);
 }
 
 } // namespace rpg_kata
