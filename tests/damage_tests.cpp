@@ -7,6 +7,12 @@
 
 namespace rpg_kata::tests
 {
+inline void deal_damage(health&      target_health,
+                        const level& attacker_level,
+                        const level& target_level)
+{
+    deal_damage(target_health, attacker_level, target_level, {}, {}, {});
+}
 
 SCENARIO("Dealing Damage", "[damage]")
 {
@@ -16,7 +22,7 @@ SCENARIO("Dealing Damage", "[damage]")
 
         WHEN("Dealing Damage")
         {
-            deal_damage(target_health, {}, {});
+            deal_damage(target_health, {}, {}, {}, {}, {});
 
             THEN("1 Damage is subtracted from target Health")
             {
@@ -70,6 +76,19 @@ SCENARIO("Dealing Damage", "[damage]")
         THEN("The dealt damage is increased by 50%")
         {
             REQUIRE(target_health == health{8.5});
+        }
+    }
+    WHEN("The target is out of range")
+    {
+        constexpr auto attacker_position = position{0, 0};
+        constexpr auto target_position   = position{2, 2};
+        auto           target_health     = health{10};
+
+        deal_damage(target_health, {}, {}, attacker_position, target_position, melee);
+
+        THEN("No damage is done")
+        {
+            REQUIRE(target_health == health{10});
         }
     }
 }

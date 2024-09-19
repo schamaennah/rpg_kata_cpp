@@ -8,10 +8,20 @@
 
 namespace rpg_kata
 {
-constexpr void deal_damage(health&      target_health,
-                           const level& attacker_level,
-                           const level& target_level)
+inline void deal_damage(health&         target_health,
+                        const level&    attacker_level,
+                        const level&    target_level,
+                        const position& attacker_position,
+                        const position& target_position,
+                        const range&    attacker_max_range)
 {
+    const auto range = distance(attacker_position, target_position);
+
+    if (range > attacker_max_range)
+    {
+        return;
+    }
+
     const auto damage_to_be_done = [&]
     {
         constexpr auto modifier  = percentage{50};
@@ -39,7 +49,13 @@ constexpr void deal_damage(const character& attacker, character& target)
     {
         return;
     }
-    deal_damage(target.health, attacker.level, target.level);
+
+    deal_damage(target.health,
+                attacker.level,
+                target.level,
+                attacker.position,
+                target.position,
+                attacker.max_range);
 }
 
 } // namespace rpg_kata
