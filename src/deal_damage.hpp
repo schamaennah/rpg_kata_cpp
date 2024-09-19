@@ -12,9 +12,24 @@ constexpr void deal_damage(health&      target_health,
                            const level& attacker_level,
                            const level& target_level)
 {
-    const auto level_gap         = target_level - attacker_level;
-    const auto damage_to_be_done
-        = level_gap >= level_diff{5} ? damage{} - percentage{50.} : damage{};
+    const auto damage_to_be_done = [&]
+    {
+        constexpr auto modifier  = percentage{50};
+        const auto level_gap = target_level - attacker_level;
+        if (level_gap >= level_diff{5})
+        {
+            return damage{} - modifier;
+        }
+        else if (level_gap <= level_diff{-5})
+        {
+            return damage{} + modifier;
+        }
+        else
+        {
+            return damage{};
+        }
+    }();
+
     target_health -= damage_to_be_done;
 }
 

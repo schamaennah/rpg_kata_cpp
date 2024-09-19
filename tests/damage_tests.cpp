@@ -60,6 +60,18 @@ SCENARIO("Dealing Damage", "[damage]")
             REQUIRE(target_health == health{9.5});
         }
     }
+    WHEN("The target is 5 or less levels below the attacker")
+    {
+        constexpr auto attacker_level = level{10};
+        constexpr auto target_level   = level{5};
+        auto           target_health  = health{10};
+        deal_damage(target_health, attacker_level, target_level);
+
+        THEN("The dealt damage is increased by 50%")
+        {
+            REQUIRE(target_health == health{8.5});
+        }
+    }
 }
 
 } // namespace rpg_kata::tests
