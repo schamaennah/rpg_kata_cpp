@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <compare>
 #include <cstddef>
 #include <set>
@@ -16,5 +17,10 @@ struct faction
 };
 
 using factions = std::set<faction>;
+
+constexpr bool are_allied(const factions& lhs, const factions& rhs)
+{
+    return std::ranges::any_of(lhs, [&](const auto& faction) { return rhs.contains(faction); });
+}
 
 } // namespace rpg_kata
