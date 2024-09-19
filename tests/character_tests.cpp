@@ -24,6 +24,10 @@ SCENARIO("New Characters", "[character]")
         {
             REQUIRE(status(new_character.health) == status::alive);
         }
+        THEN("It belongs to no Factions")
+        {
+            REQUIRE(new_character.factions.empty());
+        }
     }
 }
 
