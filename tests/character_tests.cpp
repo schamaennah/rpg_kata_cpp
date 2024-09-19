@@ -10,7 +10,7 @@ SCENARIO("New Characters", "[character]")
 {
     WHEN("A new Character is Created")
     {
-        constexpr auto new_character = character{};
+        const auto new_character = character{};
 
         THEN("Its Health is 1000")
         {
