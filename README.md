@@ -24,7 +24,7 @@
 - [X] Newly created Characters must have a Position
 - [X] Characters have an attack Max Range
 - [X] Melee fighters have a range of 2 meters
-- [ ] Ranged fighters have a range of 20 meters
+- [X] Ranged fighters have a range of 20 meters
 - [ ] Characters must be in range to deal damage to a target
 - [ ] Factions can be created
 - [ ] Characters may belong to one or more Factions
