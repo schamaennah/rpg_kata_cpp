@@ -51,6 +51,32 @@ SCENARIO("Healing Health", "[healing]")
             }
         }
     }
+    WHEN("Characters are not allied")
+    {
+        const auto healer_factions = factions{{1}, {2}, {3}};
+        const auto target_factions = factions{{4}, {5}, {6}};
+        auto       target_health   = health{50};
+
+        heal(healer_factions, target_factions, target_health);
+
+        THEN("Target is not healed")
+        {
+            REQUIRE(target_health == health{50});
+        }
+    }
+    WHEN("Characters are allied")
+    {
+        const auto healer_factions = factions{{1}, {2}, {3}};
+        const auto target_factions = factions{{3}, {4}, {5}};
+        auto       target_health   = health{50};
+
+        heal(healer_factions, target_factions, target_health);
+
+        THEN("Target is healed")
+        {
+            REQUIRE(target_health == health{51});
+        }
+    }
 }
 
 } // namespace rpg_kata::tests
