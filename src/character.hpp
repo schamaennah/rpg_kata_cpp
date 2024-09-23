@@ -1,7 +1,7 @@
 #pragma once
 
+#include "character_health.hpp"
 #include "faction.hpp"
-#include "health.hpp"
 #include "level.hpp"
 #include "position.hpp"
 #include "range.hpp"
@@ -10,7 +10,7 @@ namespace rpg_kata
 {
 struct character
 {
-    health   health;
+    character_health health;
     level    level;
     position position;
     range    max_range;

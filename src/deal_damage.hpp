@@ -1,21 +1,21 @@
 #pragma once
 
 #include "character.hpp"
+#include "character_health.hpp"
 #include "damage.hpp"
-#include "health.hpp"
 #include "level.hpp"
 #include "percentage.hpp"
 
 namespace rpg_kata
 {
-inline void deal_damage(health&         target_health,
-                        const level&    attacker_level,
-                        const level&    target_level,
-                        const position& attacker_position,
-                        const position& target_position,
-                        const range&    attacker_max_range,
-                        const factions& attacker_factions,
-                        const factions& target_factions)
+inline void deal_damage(character_health& target_health,
+                        const level&      attacker_level,
+                        const level&      target_level,
+                        const position&   attacker_position,
+                        const position&   target_position,
+                        const range&      attacker_max_range,
+                        const factions&   attacker_factions,
+                        const factions&   target_factions)
 {
     const auto range = distance(attacker_position, target_position);
 
