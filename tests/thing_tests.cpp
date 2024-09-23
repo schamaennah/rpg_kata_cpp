@@ -6,6 +6,6 @@ namespace rpg_kata::tests
 {
 TEST_CASE("Things can be Created", "[thing]")
 {
-    constexpr auto new_thing = thing{};
+    const auto new_thing = thing{};
 }
 } // namespace rpg_kata::tests

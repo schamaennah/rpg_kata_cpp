@@ -35,7 +35,7 @@
 - [X] Allies cannot Deal Damage to one another
 - [X] Allies can Heal one another
 - [X] Things can be created
-- [ ] Newly created Things must have a name (e.g. "Tree")
+- [X] Newly created Things must have a name (e.g. "Tree")
 - [ ] Newly created Things can have any Health > 1 (e.g. 2000)
 - [ ] Newly created Things must have a Position
 - [ ] Characters can damage Things which are in Range
