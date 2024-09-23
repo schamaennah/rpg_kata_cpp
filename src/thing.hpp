@@ -1,5 +1,6 @@
 #pragma once
 
+#include "position.hpp"
 #include "thing_health.hpp"
 
 #include <string>
@@ -10,5 +11,6 @@ struct thing
 {
     std::string  name;
     thing_health health;
+    position     position;
 };
 } // namespace rpg_kata
