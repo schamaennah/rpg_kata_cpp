@@ -46,7 +46,7 @@
 - [X] Magical Objects have Health
 - [X] The maximum amount of Health is fixed at the time the object is created
 - [X] When reduced to 0 Health, Magical Objects are Destroyed
-- [ ] Magical Objects cannot be Healed by Characters
+- [X] Magical Objects cannot be Healed by Characters
 - [ ] Magical Objects do not belong to Factions; they are neutral
 - [ ] Characters can hold one Magical Object
 - [ ] Newly created Characters hold no Magical Object
