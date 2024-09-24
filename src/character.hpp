@@ -7,6 +7,8 @@
 #include "position.hpp"
 #include "range.hpp"
 
+#include <optional>
+
 namespace rpg_kata
 {
 struct character
@@ -16,7 +18,7 @@ struct character
     position position;
     range    max_range;
     factions factions;
-    magical_object magical_object = {magical_object_health{1U}};
+    std::optional<magical_object> magical_object;
 };
 
 } // namespace rpg_kata
