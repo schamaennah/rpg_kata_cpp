@@ -23,6 +23,16 @@ inline bool deal_damage_preconditions(const position&                      attac
     return is_in_range && !is_magical_healing_object;
 }
 
+constexpr damage damage_from_magical_object(const std::optional<magical_object>& magical_object)
+{
+    if (magical_object && std::holds_alternative<magical_weapon>(*magical_object))
+    {
+        return std::get<magical_weapon>(*magical_object).damage;
+    }
+
+    return damage{};
+}
+
 inline void deal_damage(character_health&                    target_health,
                         const level&                         attacker_level,
                         const level&                         target_level,
@@ -49,18 +59,20 @@ inline void deal_damage(character_health&                    target_health,
     const auto damage_to_be_done = [&]
     {
         constexpr auto modifier  = percentage{50};
+        const auto     damage    = damage_from_magical_object(attacker_magical_object);
         const auto level_gap = target_level - attacker_level;
+
         if (level_gap >= level_diff{5})
         {
-            return damage{} - modifier;
+            return damage - modifier;
         }
         else if (level_gap <= level_diff{-5})
         {
-            return damage{} + modifier;
+            return damage + modifier;
         }
         else
         {
-            return damage{};
+            return damage;
         }
     }();
 
@@ -99,7 +111,7 @@ inline void deal_damage(const position&                      attacker_position,
         return;
     }
 
-    target_health -= damage{};
+    target_health -= damage_from_magical_object(attacker_magical_object);
 }
 
 } // namespace rpg_kata
