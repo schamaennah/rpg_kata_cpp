@@ -4,6 +4,7 @@
 #include <character_status.hpp>
 #include <damage.hpp>
 #include <deal_damage.hpp>
+#include <thing.hpp>
 
 namespace rpg_kata::tests
 {
@@ -176,24 +177,27 @@ SCENARIO("Dealing Damage", "[damage]")
     }
     GIVEN("A Character with a Magical Weapon")
     {
+        const auto attacker_magical_weapon
+            = std::optional<magical_object>{magical_weapon{damage{non_negative_double{4}}}};
+
         WHEN("It deals damage to a Character")
         {
             auto target_health = character_health{10};
-            deal_damage(target_health, magical_weapon{});
+            deal_damage(target_health, attacker_magical_weapon);
 
-            THEN("Damage is done")
+            THEN("The Magical Weapon Damage is inflicted")
             {
-                REQUIRE(target_health == character_health{9});
+                REQUIRE(target_health == character_health{6});
             }
         }
         WHEN("It deals damage to a Thing")
         {
             auto target_health = thing_health{non_negative_double{10}};
-            deal_damage(target_health, magical_weapon{});
+            deal_damage(target_health, attacker_magical_weapon);
 
-            THEN("Damage is done")
+            THEN("The Magical Weapon Damage is inflicted")
             {
-                REQUIRE(target_health == thing_health{non_negative_double{9}});
+                REQUIRE(target_health == thing_health{non_negative_double{6}});
             }
         }
     }
