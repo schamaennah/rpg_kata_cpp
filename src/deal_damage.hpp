@@ -9,31 +9,34 @@
 
 namespace rpg_kata
 {
-inline bool deal_damage_preconditions(
-    const position&                              attacker_position,
-    const range&                                 attacker_max_range,
-    const position&                              target_position,
-    const std::optional<healing_magical_object>& attacker_healing_magical_object)
+inline bool deal_damage_preconditions(const position&                      attacker_position,
+                                      const range&                         attacker_max_range,
+                                      const position&                      target_position,
+                                      const std::optional<magical_object>& attacker_magical_object)
 {
     const auto range = distance(attacker_position, target_position);
-    return !attacker_healing_magical_object && range <= attacker_max_range;
+    const bool is_in_range = range <= attacker_max_range;
+    const bool is_magical_healing_object
+        = attacker_magical_object
+       && std::holds_alternative<healing_magical_object>(*attacker_magical_object);
+
+    return is_in_range && !is_magical_healing_object;
 }
 
-inline void deal_damage(
-    character_health&                            target_health,
-    const level&                                 attacker_level,
-    const level&                                 target_level,
-    const position&                              attacker_position,
-    const position&                              target_position,
-    const range&                                 attacker_max_range,
-    const factions&                              attacker_factions,
-    const factions&                              target_factions,
-    const std::optional<healing_magical_object>& attacker_healing_magical_object)
+inline void deal_damage(character_health&                    target_health,
+                        const level&                         attacker_level,
+                        const level&                         target_level,
+                        const position&                      attacker_position,
+                        const position&                      target_position,
+                        const range&                         attacker_max_range,
+                        const factions&                      attacker_factions,
+                        const factions&                      target_factions,
+                        const std::optional<magical_object>& attacker_magical_object)
 {
     if (!deal_damage_preconditions(attacker_position,
                                    attacker_max_range,
                                    target_position,
-                                   attacker_healing_magical_object))
+                                   attacker_magical_object))
     {
         return;
     }
@@ -79,20 +82,19 @@ constexpr void deal_damage(const character& attacker, character& target)
                 attacker.max_range,
                 attacker.factions,
                 target.factions,
-                attacker.healing_magical_object);
+                attacker.magical_object);
 }
 
-inline void deal_damage(
-    const position&                              attacker_position,
-    const range&                                 attacker_max_range,
-    const position&                              target_position,
-    thing_health&                                target_health,
-    const std::optional<healing_magical_object>& attacker_healing_magical_object)
+inline void deal_damage(const position&                      attacker_position,
+                        const range&                         attacker_max_range,
+                        const position&                      target_position,
+                        thing_health&                        target_health,
+                        const std::optional<magical_object>& attacker_magical_object)
 {
     if (!deal_damage_preconditions(attacker_position,
                                    attacker_max_range,
                                    target_position,
-                                   attacker_healing_magical_object))
+                                   attacker_magical_object))
     {
         return;
     }
