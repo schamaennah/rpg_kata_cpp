@@ -40,7 +40,7 @@
 - [X] Newly created Things must have a Position
 - [X] Characters can damage Things which are in Range
 - [X] These things cannot be Healed and they do not Deal Damage
-- [ ] These things do not belong to Factions: they are neutral
+- [X] These things do not belong to Factions: they are neutral
 - [ ] When reduced to 0 Health, things are Destroyed
 - [ ] Magical Objects can be created
 - [ ] Magical Objects have Health
