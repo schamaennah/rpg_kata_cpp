@@ -15,4 +15,9 @@ constexpr thing_health& operator-=(thing_health& self, const damage& damage)
     return self;
 }
 
+constexpr bool is_destroyed(const thing_health& self)
+{
+    return self == thing_health{non_negative_double{0}};
+}
+
 } // namespace rpg_kata
