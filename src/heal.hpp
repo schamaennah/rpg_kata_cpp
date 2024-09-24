@@ -1,8 +1,9 @@
 #pragma once
 
+#include "character_health.hpp"
 #include "faction.hpp"
 #include "healing.hpp"
-#include "character_health.hpp"
+#include "healing_magical_object_health.hpp"
 
 namespace rpg_kata
 {
@@ -20,6 +21,17 @@ constexpr void heal(const factions& attacker_factions,
         return;
     }
 
+    heal(target_health);
+}
+
+constexpr void heal(healing_magical_object_health& source_health, character_health& target_health)
+{
+    if (source_health.is_destroyed())
+    {
+        return;
+    }
+
+    --source_health;
     heal(target_health);
 }
 

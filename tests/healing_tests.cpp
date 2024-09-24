@@ -1,7 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <heal.hpp>
 #include <character_health.hpp>
+#include <heal.hpp>
+#include <healing_magical_object.hpp>
+#include <healing_magical_object_health.hpp>
 
 namespace rpg_kata::tests
 {
@@ -75,6 +77,36 @@ SCENARIO("Healing Health", "[healing]")
         THEN("Target is healed")
         {
             REQUIRE(target_health == character_health{51});
+        }
+    }
+    GIVEN("A Healing Magical Object with Health")
+    {
+        auto source_health = healing_magical_object_health{10};
+        auto target_health = character_health{50};
+
+        WHEN("Used for healing")
+        {
+            heal(source_health, target_health);
+            THEN("Character gained health from the Magical Object")
+            {
+                REQUIRE(source_health.current() == healing_magical_object_health::type{9});
+                REQUIRE(target_health == character_health{51});
+            }
+        }
+    }
+    GIVEN("A destroyed Healing Magical Object")
+    {
+        auto source_health = healing_magical_object_health{0};
+        auto target_health = character_health{50};
+
+        WHEN("Used for healing")
+        {
+            heal(source_health, target_health);
+            THEN("Nothing happens")
+            {
+                REQUIRE(source_health.current() == healing_magical_object_health::type{0});
+                REQUIRE(target_health == character_health{50});
+            }
         }
     }
 }
