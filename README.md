@@ -51,7 +51,7 @@
 - [X] Characters can hold one Magical Object
 - [X] Newly created Characters hold no Magical Object
 - [X] Characters can gain health from a Healing Magical Object
-- [ ] Characters can gain any amount of health from the Object, up to its maximum and theirs
+- [X] Characters can gain any amount of health from the Object, up to its maximum and theirs
 - [ ] Healing Magical Objects cannot deal Damage
 - [ ] Characters can deal Damage by using a Magical Weapon
 - [ ] These Magical Objects deal a fixed amount of damage when they are used
