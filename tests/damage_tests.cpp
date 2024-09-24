@@ -104,6 +104,37 @@ SCENARIO("Dealing Damage", "[damage]")
             REQUIRE(target_health == character_health{10});
         }
     }
+    GIVEN("An attacker and a Thing ")
+    {
+        auto target_thing_health = thing_health{non_negative_double{50}};
+        auto attacker_deals_damage_with_max_range
+            = [&, attacker_position = position{1, 1}, target_position = position{2, 2}](
+                  const range& attacker_max_range) {
+                  deal_damage(attacker_position,
+                              attacker_max_range,
+                              target_position,
+                              target_thing_health);
+              };
+
+        WHEN("Dealing damange to a Thing which is in range")
+        {
+            attacker_deals_damage_with_max_range(range{2});
+
+            THEN("Damage is done")
+            {
+                REQUIRE(target_thing_health == thing_health{non_negative_double{49}});
+            }
+        }
+        WHEN("Dealing damange to a Thing which is not in range")
+        {
+            attacker_deals_damage_with_max_range(range{1});
+
+            THEN("Damage is not done")
+            {
+                REQUIRE(target_thing_health == thing_health{non_negative_double{50}});
+            }
+        }
+    }
 }
 
 } // namespace rpg_kata::tests
