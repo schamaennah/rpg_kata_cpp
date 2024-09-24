@@ -28,6 +28,10 @@ SCENARIO("New Characters", "[character]")
         {
             REQUIRE(new_character.factions.empty());
         }
+        THEN("It holds no Magical Object")
+        {
+            REQUIRE(new_character.magical_object.has_value() == false);
+        }
     }
 }
 
