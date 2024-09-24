@@ -1,7 +1,10 @@
 #pragma once
 
+#include "healing.hpp"
 #include "new_type.hpp"
 #include "value_wrapper.hpp"
+
+#include <algorithm>
 
 namespace rpg_kata
 {
@@ -23,10 +26,11 @@ public:
         return current_health == type{0};
     }
 
-    constexpr healing_magical_object_health& operator--()
+    constexpr healing syphon_up_to(const healing& upper_bound)
     {
-        --current_health.value;
-        return *this;
+        const auto syphoned_health = std::min(current_health.value, upper_bound.value);
+        current_health.value -= syphoned_health;
+        return healing{syphoned_health};
     }
 
     constexpr const type& current() const

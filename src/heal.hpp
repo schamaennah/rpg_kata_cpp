@@ -24,15 +24,17 @@ constexpr void heal(const factions& attacker_factions,
     heal(target_health);
 }
 
-constexpr void heal(healing_magical_object_health& source_health, character_health& target_health)
+constexpr void heal(healing_magical_object_health& source_health,
+                    character_health&              target_health,
+                    const healing&                 amount)
 {
     if (source_health.is_destroyed())
     {
         return;
     }
 
-    --source_health;
-    heal(target_health);
+    const auto actual_healing_amount = source_health.syphon_up_to(amount);
+    target_health += actual_healing_amount;
 }
 
 } // namespace rpg_kata
