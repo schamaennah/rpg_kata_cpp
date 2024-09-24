@@ -17,6 +17,11 @@ public:
         , max_health{max_health}
     {}
 
+    constexpr bool is_destroyed() const
+    {
+        return current_health == type{0};
+    }
+
 private:
     type current_health;
     type max_health;
