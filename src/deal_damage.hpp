@@ -3,8 +3,10 @@
 #include "character.hpp"
 #include "character_health.hpp"
 #include "damage.hpp"
+#include "damageable_health.hpp"
 #include "level.hpp"
 #include "percentage.hpp"
+#include "thing_health.hpp"
 
 namespace rpg_kata
 {
@@ -50,6 +52,14 @@ inline void deal_damage(character_health& target_health,
     target_health -= damage_to_be_done;
 }
 
+inline bool is_in_range(const position& attacker_position,
+                        const range&    attacker_max_range,
+                        const position& target_position)
+{
+    const auto range = distance(attacker_position, target_position);
+    return range <= attacker_max_range;
+}
+
 constexpr void deal_damage(const character& attacker, character& target)
 {
     if (&attacker == &target)
@@ -65,6 +75,19 @@ constexpr void deal_damage(const character& attacker, character& target)
                 attacker.max_range,
                 attacker.factions,
                 target.factions);
+}
+
+inline void deal_damage(const position& attacker_position,
+                        const range&    attacker_max_range,
+                        const position& target_position,
+                        thing_health&   target_health)
+{
+    if (!is_in_range(attacker_position, attacker_max_range, target_position))
+    {
+        return;
+    }
+
+    target_health -= damage{};
 }
 
 } // namespace rpg_kata

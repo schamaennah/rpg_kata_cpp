@@ -1,6 +1,7 @@
 #pragma once
 
 #include "damage.hpp"
+#include "damageable_health.hpp"
 #include "healing.hpp"
 #include "new_type.hpp"
 #include "character_status.hpp"
@@ -22,16 +23,10 @@ public:
         : character_health_base{std::min(value, initial_value)}
     {}
 
-    bool                               operator==(const character_health&) const = default;
-    friend constexpr character_health& operator-=(character_health&, const damage&);
-    friend constexpr character_health& operator+=(character_health&, const healing&);
+    bool                                     operator==(const character_health&) const = default;
+    friend constexpr damageable_health auto& operator-=(damageable_health auto&, const damage&);
+    friend constexpr character_health&       operator+=(character_health&, const healing&);
 };
-
-constexpr character_health& operator-=(character_health& health, const damage& damage)
-{
-    health.value -= std::min(health.value, damage.value);
-    return health;
-}
 
 constexpr character_status status(const character_health& self)
 {
