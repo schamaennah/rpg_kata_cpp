@@ -11,7 +11,7 @@ inline void deal_damage(character_health& target_health,
                         const level&      attacker_level,
                         const level&      target_level)
 {
-    deal_damage(target_health, attacker_level, target_level, {}, {}, {}, {}, {});
+    deal_damage(target_health, attacker_level, target_level, {}, {}, {}, {}, {}, {});
 }
 
 SCENARIO("Dealing Damage", "[damage]")
@@ -22,7 +22,7 @@ SCENARIO("Dealing Damage", "[damage]")
 
         WHEN("Dealing Damage")
         {
-            deal_damage(target_health, {}, {}, {}, {}, {}, {}, {});
+            deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, {});
 
             THEN("1 Damage is subtracted from target Health")
             {
@@ -84,7 +84,7 @@ SCENARIO("Dealing Damage", "[damage]")
         constexpr auto target_position   = position{2, 2};
         auto           target_health     = character_health{10};
 
-        deal_damage(target_health, {}, {}, attacker_position, target_position, melee, {}, {});
+        deal_damage(target_health, {}, {}, attacker_position, target_position, melee, {}, {}, {});
 
         THEN("No damage is done")
         {
@@ -97,7 +97,7 @@ SCENARIO("Dealing Damage", "[damage]")
         const auto target_factions   = factions{{3}, {4}, {5}};
         auto       target_health     = character_health{10};
 
-        deal_damage(target_health, {}, {}, {}, {}, {}, attacker_factions, target_factions);
+        deal_damage(target_health, {}, {}, {}, {}, {}, attacker_factions, target_factions, {});
 
         THEN("No damage is done")
         {
@@ -113,7 +113,8 @@ SCENARIO("Dealing Damage", "[damage]")
                   deal_damage(attacker_position,
                               attacker_max_range,
                               target_position,
-                              target_thing_health);
+                              target_thing_health,
+                              {});
               };
 
         WHEN("Dealing damange to a Thing which is in range")
@@ -132,6 +133,36 @@ SCENARIO("Dealing Damage", "[damage]")
             THEN("Damage is not done")
             {
                 REQUIRE(target_thing_health == thing_health{non_negative_double{50}});
+            }
+        }
+    }
+    GIVEN("A Character with a Healing Magical Object")
+    {
+        const auto attacker_healing_magical_object
+            = std::optional<healing_magical_object>{{healing_magical_object_health{10}}};
+
+        WHEN("It deals damage to a Character")
+        {
+            auto target_health = character_health{10};
+            deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, attacker_healing_magical_object);
+
+            THEN("No damage is done")
+            {
+                REQUIRE(target_health == character_health{10});
+            }
+        }
+        WHEN("It deals damage to a Thing")
+        {
+            auto target_health = thing_health{non_negative_double{10}};
+            deal_damage({},
+                        {},
+                        {},
+                        target_health,
+                        healing_magical_object{healing_magical_object_health{10}});
+
+            THEN("No damage is done")
+            {
+                REQUIRE(target_health == thing_health{non_negative_double{10}});
             }
         }
     }

@@ -9,18 +9,31 @@
 
 namespace rpg_kata
 {
-inline void deal_damage(character_health& target_health,
-                        const level&      attacker_level,
-                        const level&      target_level,
-                        const position&   attacker_position,
-                        const position&   target_position,
-                        const range&      attacker_max_range,
-                        const factions&   attacker_factions,
-                        const factions&   target_factions)
+inline bool deal_damage_preconditions(
+    const position&                              attacker_position,
+    const range&                                 attacker_max_range,
+    const position&                              target_position,
+    const std::optional<healing_magical_object>& attacker_healing_magical_object)
 {
     const auto range = distance(attacker_position, target_position);
+    return !attacker_healing_magical_object && range <= attacker_max_range;
+}
 
-    if (range > attacker_max_range)
+inline void deal_damage(
+    character_health&                            target_health,
+    const level&                                 attacker_level,
+    const level&                                 target_level,
+    const position&                              attacker_position,
+    const position&                              target_position,
+    const range&                                 attacker_max_range,
+    const factions&                              attacker_factions,
+    const factions&                              target_factions,
+    const std::optional<healing_magical_object>& attacker_healing_magical_object)
+{
+    if (!deal_damage_preconditions(attacker_position,
+                                   attacker_max_range,
+                                   target_position,
+                                   attacker_healing_magical_object))
     {
         return;
     }
@@ -51,14 +64,6 @@ inline void deal_damage(character_health& target_health,
     target_health -= damage_to_be_done;
 }
 
-inline bool is_in_range(const position& attacker_position,
-                        const range&    attacker_max_range,
-                        const position& target_position)
-{
-    const auto range = distance(attacker_position, target_position);
-    return range <= attacker_max_range;
-}
-
 constexpr void deal_damage(const character& attacker, character& target)
 {
     if (&attacker == &target)
@@ -73,15 +78,21 @@ constexpr void deal_damage(const character& attacker, character& target)
                 target.position,
                 attacker.max_range,
                 attacker.factions,
-                target.factions);
+                target.factions,
+                attacker.healing_magical_object);
 }
 
-inline void deal_damage(const position& attacker_position,
-                        const range&    attacker_max_range,
-                        const position& target_position,
-                        thing_health&   target_health)
+inline void deal_damage(
+    const position&                              attacker_position,
+    const range&                                 attacker_max_range,
+    const position&                              target_position,
+    thing_health&                                target_health,
+    const std::optional<healing_magical_object>& attacker_healing_magical_object)
 {
-    if (!is_in_range(attacker_position, attacker_max_range, target_position))
+    if (!deal_damage_preconditions(attacker_position,
+                                   attacker_max_range,
+                                   target_position,
+                                   attacker_healing_magical_object))
     {
         return;
     }
