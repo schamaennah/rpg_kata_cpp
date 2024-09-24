@@ -18,7 +18,7 @@ struct character
     position position;
     range    max_range;
     factions factions;
-    std::optional<healing_magical_object> magical_object;
+    std::optional<healing_magical_object> healing_magical_object;
 };
 
 } // namespace rpg_kata
