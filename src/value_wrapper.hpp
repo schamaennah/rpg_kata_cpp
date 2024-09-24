@@ -2,7 +2,9 @@
 
 namespace rpg_kata
 {
-template <typename tag_type, typename value_type = unsigned, auto initial_value = value_type{0}>
+template <typename tag_type   = void,
+          typename value_type = unsigned,
+          auto initial_value  = value_type{0}>
 struct value_wrapper
 {
     using type                          = value_type;

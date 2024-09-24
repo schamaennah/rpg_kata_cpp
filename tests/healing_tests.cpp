@@ -1,10 +1,25 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <heal.hpp>
 #include <character_health.hpp>
+#include <heal.hpp>
+#include <healing_magical_object.hpp>
+#include <healing_magical_object_health.hpp>
 
 namespace rpg_kata::tests
 {
+constexpr void heal(const factions&   healer_factions,
+                    const factions&   target_factions,
+                    character_health& target_health)
+{
+    auto healer_healing_magical_object = std::optional<healing_magical_object>{};
+    heal(healer_factions, target_factions, target_health, healer_healing_magical_object);
+}
+
+constexpr void heal(character_health&                      target_health,
+                    std::optional<healing_magical_object>& healer_healing_magical_object)
+{
+    heal({{1}}, {{1}}, target_health, healer_healing_magical_object);
+}
 
 SCENARIO("Healing Health", "[healing]")
 {
@@ -75,6 +90,44 @@ SCENARIO("Healing Health", "[healing]")
         THEN("Target is healed")
         {
             REQUIRE(target_health == character_health{51});
+        }
+    }
+    GIVEN("A Healing Magical Object with Health")
+    {
+        auto healer_healing_magical_object
+            = std::optional<healing_magical_object>{healing_magical_object_health{10}};
+
+        auto target_health = character_health{50};
+
+        WHEN("Used for healing")
+        {
+            heal(target_health, healer_healing_magical_object);
+            THEN("Character gained health from the Magical Object")
+            {
+                REQUIRE(healer_healing_magical_object->health.current()
+                        == healing_magical_object_health::type{9});
+
+                REQUIRE(target_health == character_health{51});
+            }
+        }
+    }
+    GIVEN("A destroyed Healing Magical Object")
+    {
+        auto healer_healing_magical_object
+            = std::optional<healing_magical_object>{healing_magical_object_health{0}};
+
+        auto target_health = character_health{50};
+
+        WHEN("Used for healing")
+        {
+            heal(target_health, healer_healing_magical_object);
+            THEN("Only the default healing is healed")
+            {
+                REQUIRE(healer_healing_magical_object->health.current()
+                        == healing_magical_object_health::type{0});
+
+                REQUIRE(target_health == character_health{51});
+            }
         }
     }
 }
