@@ -30,7 +30,7 @@ SCENARIO("New Characters", "[character]")
         }
         THEN("It holds no Magical Object")
         {
-            REQUIRE(new_character.healing_magical_object.has_value() == false);
+            REQUIRE(new_character.magical_object.has_value() == false);
         }
     }
 }

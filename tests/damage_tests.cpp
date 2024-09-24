@@ -14,6 +14,18 @@ inline void deal_damage(character_health& target_health,
     deal_damage(target_health, attacker_level, target_level, {}, {}, {}, {}, {}, {});
 }
 
+inline void deal_damage(character_health&                    target_health,
+                        const std::optional<magical_object>& attacker_magical_object)
+{
+    deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, attacker_magical_object);
+}
+
+inline void deal_damage(thing_health&                        target_health,
+                        const std::optional<magical_object>& attacker_magical_object)
+{
+    deal_damage({}, {}, {}, target_health, attacker_magical_object);
+}
+
 SCENARIO("Dealing Damage", "[damage]")
 {
     GIVEN("Target health of 50")
@@ -144,7 +156,7 @@ SCENARIO("Dealing Damage", "[damage]")
         WHEN("It deals damage to a Character")
         {
             auto target_health = character_health{10};
-            deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, attacker_healing_magical_object);
+            deal_damage(target_health, attacker_healing_magical_object);
 
             THEN("No damage is done")
             {
@@ -154,15 +166,34 @@ SCENARIO("Dealing Damage", "[damage]")
         WHEN("It deals damage to a Thing")
         {
             auto target_health = thing_health{non_negative_double{10}};
-            deal_damage({},
-                        {},
-                        {},
-                        target_health,
-                        healing_magical_object{healing_magical_object_health{10}});
+            deal_damage(target_health, attacker_healing_magical_object);
 
             THEN("No damage is done")
             {
                 REQUIRE(target_health == thing_health{non_negative_double{10}});
+            }
+        }
+    }
+    GIVEN("A Character with a Magical Weapon")
+    {
+        WHEN("It deals damage to a Character")
+        {
+            auto target_health = character_health{10};
+            deal_damage(target_health, magical_weapon{});
+
+            THEN("Damage is done")
+            {
+                REQUIRE(target_health == character_health{9});
+            }
+        }
+        WHEN("It deals damage to a Thing")
+        {
+            auto target_health = thing_health{non_negative_double{10}};
+            deal_damage(target_health, magical_weapon{});
+
+            THEN("Damage is done")
+            {
+                REQUIRE(target_health == thing_health{non_negative_double{9}});
             }
         }
     }
