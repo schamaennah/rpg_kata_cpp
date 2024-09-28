@@ -56,7 +56,7 @@
 - [X] Characters can deal Damage by using a Magical Weapon
 - [X] These Magical Objects deal a fixed amount of damage when they are used
 - [X] The amount of damage is fixed at the time the weapon is created
-- [ ] Every time the weapon is used, its Health is reduced by 1
+- [X] Every time the weapon is used, its Health is reduced by 1
 - [ ] Magical Weapons cannot give Health to a Character
 - [ ] Destroyed Magical Weapons are ineffective
 - [ ] Level 1 Characters that survive 1000 damage points gain a level (this may be counted over several battles)
