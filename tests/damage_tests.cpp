@@ -4,6 +4,7 @@
 #include <character_status.hpp>
 #include <damage.hpp>
 #include <deal_damage.hpp>
+#include <magical_object.hpp>
 #include <thing.hpp>
 
 namespace rpg_kata::tests
@@ -34,6 +35,19 @@ inline void deal_damage(thing_health&                  target_health,
                         std::optional<magical_object>& attacker_magical_object)
 {
     deal_damage({}, {}, {}, target_health, attacker_magical_object);
+}
+
+inline std::optional<magical_weapon_health> get_magical_weapon_health(
+    const std::optional<magical_object>& magical_object)
+{
+    return magical_object.and_then(
+        [](const auto& object)
+        {
+            return std::holds_alternative<magical_weapon>(object)
+                     ? std::optional{std::get<magical_weapon>(object).health}
+                     : std::optional<magical_weapon_health>{};
+            {}
+        });
 }
 
 SCENARIO("Dealing Damage", "[damage]")
@@ -222,7 +236,7 @@ SCENARIO("Dealing Damage", "[damage]")
             }
             THEN("The Magical Weapon Health is reduced by 1")
             {
-                REQUIRE(std::get<magical_weapon>(*attacker_magical_weapon).health
+                REQUIRE(get_magical_weapon_health(attacker_magical_weapon)
                         == magical_weapon_health{49});
             }
         }
@@ -237,8 +251,46 @@ SCENARIO("Dealing Damage", "[damage]")
             }
             THEN("The Magical Weapon Health is reduced by 1")
             {
-                REQUIRE(std::get<magical_weapon>(*attacker_magical_weapon).health
+                REQUIRE(get_magical_weapon_health(attacker_magical_weapon)
                         == magical_weapon_health{49});
+            }
+        }
+    }
+    GIVEN("A Character with a Destroyed Magical Weapon")
+    {
+        auto attacker_magical_weapon = std::optional<magical_object>{
+            magical_weapon{damage{non_negative_double{4}}, magical_weapon_health{0}}
+        };
+        REQUIRE(is_destroyed(std::get<magical_weapon>(*attacker_magical_weapon).health) == true);
+
+        WHEN("It deals damage to a Character")
+        {
+            auto target_health = character_health{10};
+            deal_damage(target_health, attacker_magical_weapon);
+
+            THEN("The default Damage is inflicted")
+            {
+                REQUIRE(target_health == character_health{9});
+            }
+            THEN("The Magical Weapon Health stays 0")
+            {
+                REQUIRE(get_magical_weapon_health(attacker_magical_weapon)
+                        == magical_weapon_health{0});
+            }
+        }
+        WHEN("It deals damage to a Thing")
+        {
+            auto target_health = thing_health{non_negative_double{10}};
+            deal_damage(target_health, attacker_magical_weapon);
+
+            THEN("The default Damage is inflicted")
+            {
+                REQUIRE(target_health == thing_health{non_negative_double{9}});
+            }
+            THEN("The Magical Weapon Health stays 0")
+            {
+                REQUIRE(get_magical_weapon_health(attacker_magical_weapon)
+                        == magical_weapon_health{0});
             }
         }
     }

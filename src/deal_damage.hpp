@@ -28,6 +28,12 @@ constexpr damage damage_from_magical_object(std::optional<magical_object>& magic
     if (magical_object && std::holds_alternative<magical_weapon>(*magical_object))
     {
         auto& attacker_magical_weapon = std::get<magical_weapon>(*magical_object);
+
+        if (is_destroyed(attacker_magical_weapon.health))
+        {
+            return damage{};
+        }
+
         --attacker_magical_weapon.health;
         return attacker_magical_weapon.damage;
     }

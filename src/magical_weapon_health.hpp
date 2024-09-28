@@ -17,4 +17,9 @@ constexpr magical_weapon_health& operator--(magical_weapon_health& health)
     return health;
 }
 
+constexpr bool is_destroyed(const magical_weapon_health& health)
+{
+    return health == magical_weapon_health{0};
+}
+
 } // namespace rpg_kata
