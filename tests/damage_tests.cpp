@@ -12,17 +12,26 @@ inline void deal_damage(character_health& target_health,
                         const level&      attacker_level,
                         const level&      target_level)
 {
-    deal_damage(target_health, attacker_level, target_level, {}, {}, {}, {}, {}, {});
+    auto attacker_magical_object = std::optional<magical_object>{};
+    deal_damage(target_health,
+                attacker_level,
+                target_level,
+                {},
+                {},
+                {},
+                {},
+                {},
+                attacker_magical_object);
 }
 
-inline void deal_damage(character_health&                    target_health,
-                        const std::optional<magical_object>& attacker_magical_object)
+inline void deal_damage(character_health&              target_health,
+                        std::optional<magical_object>& attacker_magical_object)
 {
     deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, attacker_magical_object);
 }
 
-inline void deal_damage(thing_health&                        target_health,
-                        const std::optional<magical_object>& attacker_magical_object)
+inline void deal_damage(thing_health&                  target_health,
+                        std::optional<magical_object>& attacker_magical_object)
 {
     deal_damage({}, {}, {}, target_health, attacker_magical_object);
 }
@@ -35,7 +44,8 @@ SCENARIO("Dealing Damage", "[damage]")
 
         WHEN("Dealing Damage")
         {
-            deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, {});
+            auto attacker_magical_object = std::optional<magical_object>{};
+            deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, attacker_magical_object);
 
             THEN("1 Damage is subtracted from target Health")
             {
@@ -96,8 +106,16 @@ SCENARIO("Dealing Damage", "[damage]")
         constexpr auto attacker_position = position{0, 0};
         constexpr auto target_position   = position{2, 2};
         auto           target_health     = character_health{10};
-
-        deal_damage(target_health, {}, {}, attacker_position, target_position, melee, {}, {}, {});
+        auto           attacker_magical_object = std::optional<magical_object>{};
+        deal_damage(target_health,
+                    {},
+                    {},
+                    attacker_position,
+                    target_position,
+                    melee,
+                    {},
+                    {},
+                    attacker_magical_object);
 
         THEN("No damage is done")
         {
@@ -109,8 +127,16 @@ SCENARIO("Dealing Damage", "[damage]")
         const auto attacker_factions = factions{{1}, {2}, {3}};
         const auto target_factions   = factions{{3}, {4}, {5}};
         auto       target_health     = character_health{10};
-
-        deal_damage(target_health, {}, {}, {}, {}, {}, attacker_factions, target_factions, {});
+        auto       attacker_magical_object = std::optional<magical_object>{};
+        deal_damage(target_health,
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    attacker_factions,
+                    target_factions,
+                    attacker_magical_object);
 
         THEN("No damage is done")
         {
@@ -121,14 +147,18 @@ SCENARIO("Dealing Damage", "[damage]")
     {
         auto target_thing_health = thing_health{non_negative_double{50}};
         auto attacker_deals_damage_with_max_range
-            = [&, attacker_position = position{1, 1}, target_position = position{2, 2}](
-                  const range& attacker_max_range) {
-                  deal_damage(attacker_position,
-                              attacker_max_range,
-                              target_position,
-                              target_thing_health,
-                              {});
-              };
+            = [&,
+               attacker_position = position{1, 1},
+               target_position   = position{2, 2},
+               attacker_magical_object
+               = std::optional<magical_object>{}](const range& attacker_max_range) mutable
+        {
+            deal_damage(attacker_position,
+                        attacker_max_range,
+                        target_position,
+                        target_thing_health,
+                        attacker_magical_object);
+        };
 
         WHEN("Dealing damange to a Thing which is in range")
         {
@@ -151,8 +181,8 @@ SCENARIO("Dealing Damage", "[damage]")
     }
     GIVEN("A Character with a Healing Magical Object")
     {
-        const auto attacker_healing_magical_object
-            = std::optional<healing_magical_object>{{healing_magical_object_health{10}}};
+        auto attacker_healing_magical_object = std::optional<magical_object>{
+            healing_magical_object{healing_magical_object_health{10}}};
 
         WHEN("It deals damage to a Character")
         {
@@ -177,8 +207,9 @@ SCENARIO("Dealing Damage", "[damage]")
     }
     GIVEN("A Character with a Magical Weapon")
     {
-        const auto attacker_magical_weapon
-            = std::optional<magical_object>{magical_weapon{damage{non_negative_double{4}}}};
+        auto attacker_magical_weapon = std::optional<magical_object>{
+            magical_weapon{damage{non_negative_double{4}}, magical_weapon_health{50}}
+        };
 
         WHEN("It deals damage to a Character")
         {
@@ -189,6 +220,11 @@ SCENARIO("Dealing Damage", "[damage]")
             {
                 REQUIRE(target_health == character_health{6});
             }
+            THEN("The Magical Weapon Health is reduced by 1")
+            {
+                REQUIRE(std::get<magical_weapon>(*attacker_magical_weapon).health
+                        == magical_weapon_health{49});
+            }
         }
         WHEN("It deals damage to a Thing")
         {
@@ -198,6 +234,11 @@ SCENARIO("Dealing Damage", "[damage]")
             THEN("The Magical Weapon Damage is inflicted")
             {
                 REQUIRE(target_health == thing_health{non_negative_double{6}});
+            }
+            THEN("The Magical Weapon Health is reduced by 1")
+            {
+                REQUIRE(std::get<magical_weapon>(*attacker_magical_weapon).health
+                        == magical_weapon_health{49});
             }
         }
     }
