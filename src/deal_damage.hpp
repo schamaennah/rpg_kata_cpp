@@ -23,25 +23,27 @@ inline bool deal_damage_preconditions(const position&                      attac
     return is_in_range && !is_magical_healing_object;
 }
 
-constexpr damage damage_from_magical_object(const std::optional<magical_object>& magical_object)
+constexpr damage damage_from_magical_object(std::optional<magical_object>& magical_object)
 {
     if (magical_object && std::holds_alternative<magical_weapon>(*magical_object))
     {
-        return std::get<magical_weapon>(*magical_object).damage;
+        auto& attacker_magical_weapon = std::get<magical_weapon>(*magical_object);
+        --attacker_magical_weapon.health;
+        return attacker_magical_weapon.damage;
     }
 
     return damage{};
 }
 
-inline void deal_damage(character_health&                    target_health,
-                        const level&                         attacker_level,
-                        const level&                         target_level,
-                        const position&                      attacker_position,
-                        const position&                      target_position,
-                        const range&                         attacker_max_range,
-                        const factions&                      attacker_factions,
-                        const factions&                      target_factions,
-                        const std::optional<magical_object>& attacker_magical_object)
+inline void deal_damage(character_health&              target_health,
+                        const level&                   attacker_level,
+                        const level&                   target_level,
+                        const position&                attacker_position,
+                        const position&                target_position,
+                        const range&                   attacker_max_range,
+                        const factions&                attacker_factions,
+                        const factions&                target_factions,
+                        std::optional<magical_object>& attacker_magical_object)
 {
     if (!deal_damage_preconditions(attacker_position,
                                    attacker_max_range,
@@ -79,7 +81,7 @@ inline void deal_damage(character_health&                    target_health,
     target_health -= damage_to_be_done;
 }
 
-constexpr void deal_damage(const character& attacker, character& target)
+constexpr void deal_damage(character& attacker, character& target)
 {
     if (&attacker == &target)
     {
@@ -97,11 +99,11 @@ constexpr void deal_damage(const character& attacker, character& target)
                 attacker.magical_object);
 }
 
-inline void deal_damage(const position&                      attacker_position,
-                        const range&                         attacker_max_range,
-                        const position&                      target_position,
-                        thing_health&                        target_health,
-                        const std::optional<magical_object>& attacker_magical_object)
+inline void deal_damage(const position&                attacker_position,
+                        const range&                   attacker_max_range,
+                        const position&                target_position,
+                        thing_health&                  target_health,
+                        std::optional<magical_object>& attacker_magical_object)
 {
     if (!deal_damage_preconditions(attacker_position,
                                    attacker_max_range,
