@@ -7,7 +7,7 @@
 
 namespace rpg_kata
 {
-using damage = value_wrapper<new_type, non_negative_double, 1.>;
+using damage = value_wrapper<new_type, non_negative_double, 0.>;
 
 constexpr damage apply(const percentage& percentage, const damage& subject_damage)
 {
@@ -22,6 +22,12 @@ constexpr damage operator-(const damage& self, const percentage& percentage)
 constexpr damage operator+(const damage& self, const percentage& percentage)
 {
     return {non_negative_double{self.value.get() + apply(percentage, self).value.get()}};
+}
+
+constexpr damage& operator+=(damage& self, const damage& other)
+{
+    self.value += other.value;
+    return self;
 }
 
 } // namespace rpg_kata

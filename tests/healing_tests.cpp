@@ -1,25 +1,37 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <character_health.hpp>
+#include <character_stats.hpp>
 #include <heal.hpp>
 #include <healing_magical_object.hpp>
 #include <healing_magical_object_health.hpp>
 
 namespace rpg_kata::tests
 {
+constexpr void heal(character_health& target_health)
+{
+    auto target_stats = character_stats{target_health};
+    heal(target_stats);
+    target_health = target_stats.get_health();
+}
+
 constexpr void heal(const factions&   healer_factions,
                     const factions&   target_factions,
                     character_health& target_health)
 {
     auto healer_healing_magical_object = std::optional<healing_magical_object>{};
-    heal(healer_factions, target_factions, target_health, healer_healing_magical_object, {});
+    auto target_stats                  = character_stats{target_health};
+    heal(healer_factions, target_factions, target_stats, healer_healing_magical_object, {});
+    target_health = target_stats.get_health();
 }
 
 constexpr void heal(character_health&                      target_health,
                     std::optional<healing_magical_object>& healer_healing_magical_object,
                     const healing&                         amount)
 {
-    heal({{1}}, {{1}}, target_health, healer_healing_magical_object, amount);
+    auto target_stats = character_stats{target_health};
+    heal({{1}}, {{1}}, target_stats, healer_healing_magical_object, amount);
+    target_health = target_stats.get_health();
 }
 
 SCENARIO("Healing Health", "[healing]")

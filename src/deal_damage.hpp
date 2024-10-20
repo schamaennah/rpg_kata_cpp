@@ -29,21 +29,18 @@ constexpr damage damage_from_magical_object(std::optional<magical_object>& magic
     {
         auto& attacker_magical_weapon = std::get<magical_weapon>(*magical_object);
 
-        if (is_destroyed(attacker_magical_weapon.health))
+        if (!is_destroyed(attacker_magical_weapon.health))
         {
-            return damage{};
+            --attacker_magical_weapon.health;
+            return attacker_magical_weapon.damage;
         }
-
-        --attacker_magical_weapon.health;
-        return attacker_magical_weapon.damage;
     }
 
-    return damage{};
+    return damage{non_negative_double{1.}};
 }
 
-inline void deal_damage(character_health&              target_health,
+inline void deal_damage(character_stats&               target_stats,
                         const level&                   attacker_level,
-                        const level&                   target_level,
                         const position&                attacker_position,
                         const position&                target_position,
                         const range&                   attacker_max_range,
@@ -68,7 +65,7 @@ inline void deal_damage(character_health&              target_health,
     {
         constexpr auto modifier  = percentage{50};
         const auto     damage    = damage_from_magical_object(attacker_magical_object);
-        const auto level_gap = target_level - attacker_level;
+        const auto     level_gap = target_stats.get_level() - attacker_level;
 
         if (level_gap >= level_diff{5})
         {
@@ -84,7 +81,7 @@ inline void deal_damage(character_health&              target_health,
         }
     }();
 
-    target_health -= damage_to_be_done;
+    target_stats.take_damage(damage_to_be_done);
 }
 
 constexpr void deal_damage(character& attacker, character& target)
@@ -94,9 +91,8 @@ constexpr void deal_damage(character& attacker, character& target)
         return;
     }
 
-    deal_damage(target.health,
-                attacker.level,
-                target.level,
+    deal_damage(target.stats,
+                attacker.stats.get_level(),
                 attacker.position,
                 target.position,
                 attacker.max_range,

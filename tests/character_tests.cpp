@@ -14,15 +14,15 @@ SCENARIO("New Characters", "[character]")
 
         THEN("Its Health is 1000")
         {
-            REQUIRE(new_character.health == character_health{1000});
+            REQUIRE(new_character.stats.get_health() == character_health{1000});
         }
         THEN("Its Level is 1")
         {
-            REQUIRE(new_character.level == level{1});
+            REQUIRE(new_character.stats.get_level() == level{1});
         }
         THEN("It's Alive")
         {
-            REQUIRE(status(new_character.health) == character_status::alive);
+            REQUIRE(status(new_character.stats.get_health()) == character_status::alive);
         }
         THEN("It belongs to no Factions")
         {

@@ -29,6 +29,12 @@ public:
         return non_negative_double{value + other};
     }
 
+    constexpr non_negative_double& operator+=(const non_negative_double other)
+    {
+        value += other.value;
+        return *this;
+    }
+
 private:
     double value;
 };

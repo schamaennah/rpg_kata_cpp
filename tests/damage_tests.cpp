@@ -13,28 +13,63 @@ inline void deal_damage(character_health& target_health,
                         const level&      attacker_level,
                         const level&      target_level)
 {
+    auto target_stats            = character_stats{target_health, target_level};
     auto attacker_magical_object = std::optional<magical_object>{};
-    deal_damage(target_health,
-                attacker_level,
-                target_level,
-                {},
-                {},
-                {},
-                {},
-                {},
-                attacker_magical_object);
+    deal_damage(target_stats, attacker_level, {}, {}, {}, {}, {}, attacker_magical_object);
+    target_health = target_stats.get_health();
 }
 
 inline void deal_damage(character_health&              target_health,
                         std::optional<magical_object>& attacker_magical_object)
 {
-    deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, attacker_magical_object);
+    auto target_stats = character_stats{target_health};
+    deal_damage(target_stats, {}, {}, {}, {}, {}, {}, attacker_magical_object);
+    target_health = target_stats.get_health();
 }
 
 inline void deal_damage(thing_health&                  target_health,
                         std::optional<magical_object>& attacker_magical_object)
 {
     deal_damage({}, {}, {}, target_health, attacker_magical_object);
+}
+
+inline void deal_damage(character_health& target_health,
+                        const position&   attacker_position,
+                        const position&   target_position,
+                        const range&      attacker_max_range)
+{
+    auto target_stats            = character_stats{target_health};
+    auto attacker_magical_object = std::optional<magical_object>{};
+
+    deal_damage(target_stats,
+                {},
+                attacker_position,
+                target_position,
+                attacker_max_range,
+                {},
+                {},
+                attacker_magical_object);
+
+    target_health = target_stats.get_health();
+}
+
+inline void deal_damage(character_health& target_health,
+                        const factions&   attacker_factions,
+                        const factions&   target_factions)
+{
+    auto target_stats            = character_stats{target_health};
+    auto attacker_magical_object = std::optional<magical_object>{};
+
+    deal_damage(target_stats,
+                {},
+                {},
+                {},
+                {},
+                attacker_factions,
+                target_factions,
+                attacker_magical_object);
+
+    target_health = target_stats.get_health();
 }
 
 inline std::optional<magical_weapon_health> get_magical_weapon_health(
@@ -59,7 +94,7 @@ SCENARIO("Dealing Damage", "[damage]")
         WHEN("Dealing Damage")
         {
             auto attacker_magical_object = std::optional<magical_object>{};
-            deal_damage(target_health, {}, {}, {}, {}, {}, {}, {}, attacker_magical_object);
+            deal_damage(target_health, attacker_magical_object);
 
             THEN("1 Damage is subtracted from target Health")
             {
@@ -88,7 +123,7 @@ SCENARIO("Dealing Damage", "[damage]")
 
         THEN("Nothing happens")
         {
-            REQUIRE(new_character.health == character_health{1000});
+            REQUIRE(new_character.stats.get_health() == character_health{1000});
         }
     }
     WHEN("The target is 5 or more levels above the attacker")
@@ -120,16 +155,8 @@ SCENARIO("Dealing Damage", "[damage]")
         constexpr auto attacker_position = position{0, 0};
         constexpr auto target_position   = position{2, 2};
         auto           target_health     = character_health{10};
-        auto           attacker_magical_object = std::optional<magical_object>{};
-        deal_damage(target_health,
-                    {},
-                    {},
-                    attacker_position,
-                    target_position,
-                    melee,
-                    {},
-                    {},
-                    attacker_magical_object);
+
+        deal_damage(target_health, attacker_position, target_position, melee);
 
         THEN("No damage is done")
         {
@@ -141,16 +168,8 @@ SCENARIO("Dealing Damage", "[damage]")
         const auto attacker_factions = factions{{1}, {2}, {3}};
         const auto target_factions   = factions{{3}, {4}, {5}};
         auto       target_health     = character_health{10};
-        auto       attacker_magical_object = std::optional<magical_object>{};
-        deal_damage(target_health,
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    attacker_factions,
-                    target_factions,
-                    attacker_magical_object);
+
+        deal_damage(target_health, attacker_factions, target_factions);
 
         THEN("No damage is done")
         {

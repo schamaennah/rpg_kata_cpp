@@ -25,6 +25,11 @@ public:
     bool                               operator==(const character_health&) const = default;
     friend constexpr character_health& operator-=(character_health&, const damage&);
     friend constexpr character_health& operator+=(character_health&, const healing&);
+
+    constexpr const auto& get() const
+    {
+        return value;
+    }
 };
 
 constexpr character_health& operator-=(character_health& health, const damage& damage)
