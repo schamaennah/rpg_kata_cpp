@@ -11,6 +11,7 @@ namespace rpg_kata
 class character_stats
 {
     static constexpr auto level_2_threshold = damage{non_negative_double{1000}};
+    static constexpr auto level_3_threshold = level_2_threshold + damage{non_negative_double{2000}};
 
 public:
     constexpr character_stats() = default;
@@ -40,6 +41,12 @@ public:
             && total_received_damage >= level_2_threshold)
         {
             level = rpg_kata::level{2};
+        }
+        else if (status(health) == character_status::alive
+                 && previous_total_received_damage < level_3_threshold
+                 && total_received_damage >= level_3_threshold)
+        {
+            level = rpg_kata::level{3};
         }
     }
 

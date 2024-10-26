@@ -30,4 +30,9 @@ constexpr damage& operator+=(damage& self, const damage& other)
     return self;
 }
 
+constexpr damage operator+(const damage& self, const damage& other)
+{
+    return {self.value + other.value};
+}
+
 } // namespace rpg_kata
