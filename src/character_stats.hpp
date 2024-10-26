@@ -8,6 +8,17 @@
 
 namespace rpg_kata
 {
+constexpr damage leveling_damage_threshold(const level& current_level)
+{
+    if (current_level == level{0})
+    {
+        return damage{};
+    }
+
+    return damage{non_negative_double{1000.} * current_level.value}
+         + leveling_damage_threshold(level{current_level.value - 1});
+}
+
 class character_stats
 {
     static constexpr auto level_2_threshold = damage{non_negative_double{1000}};
@@ -36,17 +47,13 @@ public:
         total_received_damage
             += {non_negative_double{previous_health.get().get() - health.get().get()}};
 
+        const auto next_level_threshold = leveling_damage_threshold(level);
+
         if (status(health) == character_status::alive
-            && previous_total_received_damage < level_2_threshold
-            && total_received_damage >= level_2_threshold)
+            && previous_total_received_damage < next_level_threshold
+            && total_received_damage >= next_level_threshold)
         {
-            level = rpg_kata::level{2};
-        }
-        else if (status(health) == character_status::alive
-                 && previous_total_received_damage < level_3_threshold
-                 && total_received_damage >= level_3_threshold)
-        {
-            level = rpg_kata::level{3};
+            ++level;
         }
     }
 

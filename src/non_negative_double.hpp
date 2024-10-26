@@ -40,6 +40,11 @@ public:
         return non_negative_double{value + other.value};
     }
 
+    constexpr non_negative_double operator*(const unsigned other) const
+    {
+        return non_negative_double{value * other};
+    }
+
 private:
     double value;
 };

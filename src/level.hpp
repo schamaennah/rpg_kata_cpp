@@ -15,4 +15,10 @@ constexpr level_diff operator-(const level& lhs, const level& rhs)
                       - static_cast<level_diff::type>(rhs.value)};
 }
 
+constexpr level& operator++(level& self)
+{
+    ++self.value;
+    return self;
+}
+
 } // namespace rpg_kata
