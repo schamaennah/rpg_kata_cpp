@@ -16,11 +16,47 @@ struct faction
     std::strong_ordering operator<=>(const faction&) const = default;
 };
 
-using factions = std::set<faction>;
+class factions
+{
+public:
+    factions() = default;
+
+    explicit factions(const std::initializer_list<faction>& values)
+        : current{values}
+        , total{values}
+    {}
+
+    constexpr const auto& get_current() const
+    {
+        return current;
+    }
+
+    auto get_total_size() const
+    {
+        return total.size();
+    }
+
+    void join(const faction& faction)
+    {
+        current.insert(faction);
+        total.insert(faction);
+    }
+
+    void leave(const faction& faction)
+    {
+        current.erase(faction);
+    }
+
+private:
+    std::set<faction> current;
+    std::set<faction> total;
+};
 
 constexpr bool are_allied(const factions& lhs, const factions& rhs)
 {
-    return std::ranges::any_of(lhs, [&](const auto& faction) { return rhs.contains(faction); });
+    return std::ranges::any_of(lhs.get_current(),
+                               [&](const auto& faction)
+                               { return rhs.get_current().contains(faction); });
 }
 
 } // namespace rpg_kata

@@ -13,12 +13,11 @@ constexpr void heal(character_stats& target_stats)
 }
 
 constexpr void heal(const factions&                        healer_factions,
-                    const factions&                        target_factions,
                     character_stats&                       target_stats,
                     std::optional<healing_magical_object>& healing_magical_object,
                     const healing&                         amount)
 {
-    if (!are_allied(healer_factions, target_factions))
+    if (!are_allied(healer_factions, target_stats.get_factions()))
     {
         return;
     }

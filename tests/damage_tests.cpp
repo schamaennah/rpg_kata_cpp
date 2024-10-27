@@ -15,15 +15,21 @@ inline void deal_damage(character_health& target_health,
 {
     auto target_stats            = character_stats{target_health, target_level};
     auto attacker_magical_object = std::optional<magical_object>{};
-    deal_damage(target_stats, attacker_level, {}, {}, {}, {}, {}, attacker_magical_object);
+    deal_damage(target_stats, attacker_level, {}, {}, {}, {}, attacker_magical_object);
     target_health = target_stats.get_health();
+}
+
+inline void deal_damage(character_stats& target_stats, const level& attacker_level)
+{
+    auto attacker_magical_object = std::optional<magical_object>{};
+    deal_damage(target_stats, attacker_level, {}, {}, {}, {}, attacker_magical_object);
 }
 
 inline void deal_damage(character_health&              target_health,
                         std::optional<magical_object>& attacker_magical_object)
 {
     auto target_stats = character_stats{target_health};
-    deal_damage(target_stats, {}, {}, {}, {}, {}, {}, attacker_magical_object);
+    deal_damage(target_stats, {}, {}, {}, {}, {}, attacker_magical_object);
     target_health = target_stats.get_health();
 }
 
@@ -47,7 +53,6 @@ inline void deal_damage(character_health& target_health,
                 target_position,
                 attacker_max_range,
                 {},
-                {},
                 attacker_magical_object);
 
     target_health = target_stats.get_health();
@@ -57,7 +62,7 @@ inline void deal_damage(character_health& target_health,
                         const factions&   attacker_factions,
                         const factions&   target_factions)
 {
-    auto target_stats            = character_stats{target_health};
+    auto target_stats            = character_stats{target_health, target_factions};
     auto attacker_magical_object = std::optional<magical_object>{};
 
     deal_damage(target_stats,
@@ -66,7 +71,6 @@ inline void deal_damage(character_health& target_health,
                 {},
                 {},
                 attacker_factions,
-                target_factions,
                 attacker_magical_object);
 
     target_health = target_stats.get_health();

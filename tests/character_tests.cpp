@@ -26,7 +26,7 @@ SCENARIO("New Characters", "[character]")
         }
         THEN("It belongs to no Factions")
         {
-            REQUIRE(new_character.factions.empty());
+            REQUIRE(new_character.stats.get_factions().get_current().empty());
         }
         THEN("It holds no Magical Object")
         {

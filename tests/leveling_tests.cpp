@@ -6,12 +6,12 @@
 
 namespace rpg_kata::tests
 {
-SCENARIO("Leveling up from 1 to 4", "[level]")
+SCENARIO("Leveling up from 1 to 4 by received damage", "[level]")
 {
     GIVEN("A level 1 character")
     {
         const auto allied = factions{{1}};
-        auto       hero   = character{.factions = allied};
+        auto       hero   = character{.stats = character_stats{allied}};
 
         REQUIRE(hero.stats.get_level() == level{1});
 
@@ -25,7 +25,7 @@ SCENARIO("Leveling up from 1 to 4", "[level]")
             auto healing_object
                 = std::optional<healing_magical_object>{healing_magical_object_health{6000}};
 
-            heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+            heal(allied, hero.stats, healing_object, healing{500});
 
             deal_damage(enemy, hero);
 
@@ -39,13 +39,13 @@ SCENARIO("Leveling up from 1 to 4", "[level]")
             }
             WHEN("When he survives additional 2000 damage")
             {
-                heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                heal(allied, hero.stats, healing_object, healing{500});
                 deal_damage(enemy, hero); // 1500
-                heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                heal(allied, hero.stats, healing_object, healing{500});
                 deal_damage(enemy, hero); // 2000
-                heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                heal(allied, hero.stats, healing_object, healing{500});
                 deal_damage(enemy, hero); // 2500
-                heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                heal(allied, hero.stats, healing_object, healing{500});
                 deal_damage(enemy, hero); // 3000
 
                 THEN("He is alive")
@@ -58,17 +58,17 @@ SCENARIO("Leveling up from 1 to 4", "[level]")
                 }
                 WHEN("When he survives additional 3000 damage")
                 {
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 3500
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 4000
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 4500
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 5000
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 5500
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 6000
 
                     THEN("He is alive")
@@ -82,13 +82,13 @@ SCENARIO("Leveling up from 1 to 4", "[level]")
                 }
                 WHEN("When he does not survive additional 3000 damage")
                 {
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 3500
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 4000
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 4500
-                    heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                    heal(allied, hero.stats, healing_object, healing{500});
                     deal_damage(enemy, hero); // 5000
 
                     const auto weapon    = magical_weapon{damage{non_negative_double{1000}}, {10}};
@@ -108,11 +108,11 @@ SCENARIO("Leveling up from 1 to 4", "[level]")
             }
             WHEN("When he does not survive additional 2000 damage")
             {
-                heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                heal(allied, hero.stats, healing_object, healing{500});
                 deal_damage(enemy, hero); // 1500
-                heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                heal(allied, hero.stats, healing_object, healing{500});
                 deal_damage(enemy, hero); // 2000
-                heal(allied, hero.factions, hero.stats, healing_object, healing{500});
+                heal(allied, hero.stats, healing_object, healing{500});
 
                 const auto weapon    = magical_weapon{damage{non_negative_double{1000}}, {10}};
                 enemy.magical_object = weapon;
@@ -143,6 +143,27 @@ SCENARIO("Leveling up from 1 to 4", "[level]")
             THEN("He is still level 1")
             {
                 REQUIRE(hero.stats.get_level() == level{1});
+            }
+        }
+    }
+}
+
+SCENARIO("Leveling up from 1 to 2 by changing factions", "[level]")
+{
+    GIVEN("A level 1 character")
+    {
+        auto hero = character{};
+        REQUIRE(hero.stats.get_level() == level{1});
+
+        WHEN("When he has been part of more than 3 different factions")
+        {
+            hero.stats.join_faction({1});
+            hero.stats.join_faction({2});
+            hero.stats.join_faction({3});
+
+            THEN("He is level 2")
+            {
+                REQUIRE(hero.stats.get_level() == level{2});
             }
         }
     }

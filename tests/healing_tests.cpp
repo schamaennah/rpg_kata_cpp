@@ -10,7 +10,7 @@ namespace rpg_kata::tests
 {
 constexpr void heal(character_health& target_health)
 {
-    auto target_stats = character_stats{target_health};
+    auto target_stats = character_stats{target_health, level{}};
     heal(target_stats);
     target_health = target_stats.get_health();
 }
@@ -20,17 +20,18 @@ constexpr void heal(const factions&   healer_factions,
                     character_health& target_health)
 {
     auto healer_healing_magical_object = std::optional<healing_magical_object>{};
-    auto target_stats                  = character_stats{target_health};
-    heal(healer_factions, target_factions, target_stats, healer_healing_magical_object, {});
+    auto target_stats                  = character_stats{target_health, target_factions};
+    heal(healer_factions, target_stats, healer_healing_magical_object, {});
     target_health = target_stats.get_health();
 }
 
-constexpr void heal(character_health&                      target_health,
-                    std::optional<healing_magical_object>& healer_healing_magical_object,
-                    const healing&                         amount)
+inline void heal(character_health&                      target_health,
+                 std::optional<healing_magical_object>& healer_healing_magical_object,
+                 const healing&                         amount)
 {
-    auto target_stats = character_stats{target_health};
-    heal({{1}}, {{1}}, target_stats, healer_healing_magical_object, amount);
+    const auto allied_factions = factions{{1}};
+    auto       target_stats    = character_stats{target_health, allied_factions};
+    heal(allied_factions, target_stats, healer_healing_magical_object, amount);
     target_health = target_stats.get_health();
 }
 

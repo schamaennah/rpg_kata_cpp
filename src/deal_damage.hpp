@@ -45,7 +45,6 @@ inline void deal_damage(character_stats&               target_stats,
                         const position&                target_position,
                         const range&                   attacker_max_range,
                         const factions&                attacker_factions,
-                        const factions&                target_factions,
                         std::optional<magical_object>& attacker_magical_object)
 {
     if (!deal_damage_preconditions(attacker_position,
@@ -56,7 +55,7 @@ inline void deal_damage(character_stats&               target_stats,
         return;
     }
 
-    if (are_allied(attacker_factions, target_factions))
+    if (are_allied(attacker_factions, target_stats.get_factions()))
     {
         return;
     }
@@ -96,8 +95,7 @@ constexpr void deal_damage(character& attacker, character& target)
                 attacker.position,
                 target.position,
                 attacker.max_range,
-                attacker.factions,
-                target.factions,
+                attacker.stats.get_factions(),
                 attacker.magical_object);
 }
 
