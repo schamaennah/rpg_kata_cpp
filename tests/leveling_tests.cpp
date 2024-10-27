@@ -148,7 +148,7 @@ SCENARIO("Leveling up from 1 to 4 by received damage", "[level]")
     }
 }
 
-SCENARIO("Leveling up from 1 to 3 by changing factions", "[level]")
+SCENARIO("Leveling up from 1 to 4 by changing factions", "[level]")
 {
     GIVEN("A level 1 character")
     {
@@ -174,6 +174,17 @@ SCENARIO("Leveling up from 1 to 3 by changing factions", "[level]")
                 THEN("He is level 3")
                 {
                     REQUIRE(hero.stats.get_level() == level{3});
+                }
+                WHEN("When he has been part of additional 3 different factions")
+                {
+                    hero.stats.join_faction({7});
+                    hero.stats.join_faction({8});
+                    hero.stats.join_faction({9});
+
+                    THEN("He is level 4")
+                    {
+                        REQUIRE(hero.stats.get_level() == level{4});
+                    }
                 }
             }
         }

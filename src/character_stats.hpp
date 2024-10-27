@@ -97,13 +97,12 @@ public:
     void join_faction(const faction& faction)
     {
         factions.join(faction);
-        if (factions.get_total_size() >= 3 && level < rpg_kata::level{2})
+
+        const auto next_level_threshold = level.value * 3;
+
+        if (factions.get_total_size() >= next_level_threshold)
         {
-            level = rpg_kata::level{2};
-        }
-        else if (factions.get_total_size() >= 6 && level < rpg_kata::level{3})
-        {
-            level = rpg_kata::level{3};
+            ++level;
         }
     }
 
