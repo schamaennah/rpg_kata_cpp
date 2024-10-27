@@ -11,30 +11,43 @@
 
 namespace rpg_kata
 {
-using character_health_base = value_wrapper<new_type, non_negative_double, 1000.>;
-
-class character_health : character_health_base
+class character_health
 {
 public:
+    using type = value_wrapper<new_type, non_negative_double, 1000.>;
+
     constexpr character_health() = default;
 
     explicit constexpr character_health(const double value)
-        : character_health_base{std::min(non_negative_double{value}, initial_value)}
+        : current{std::min(non_negative_double{value}, type::initial_value)}
     {}
 
-    bool                               operator==(const character_health&) const = default;
+    constexpr bool operator==(const character_health& other) const
+    {
+        return current == other.current;
+    }
+
     friend constexpr character_health& operator-=(character_health&, const damage&);
     friend constexpr character_health& operator+=(character_health&, const healing&);
 
     constexpr const auto& get() const
     {
-        return value;
+        return current.value;
     }
+
+    void level_up()
+    {
+        max = type{non_negative_double{1500.}};
+    }
+
+private:
+    type current;
+    type max;
 };
 
 constexpr character_health& operator-=(character_health& health, const damage& damage)
 {
-    health.value -= damage.value;
+    health.current.value -= damage.value;
     return health;
 }
 
@@ -55,8 +68,8 @@ constexpr character_health& operator+=(character_health& health_to_increase, con
         return health_to_increase;
     }
 
-    health_to_increase.value
-        = std::min(health_to_increase.value + healing.value, character_health::initial_value);
+    health_to_increase.current.value
+        = std::min(health_to_increase.current.value + healing.value, health_to_increase.max.value);
 
     return health_to_increase;
 }

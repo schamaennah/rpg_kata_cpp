@@ -191,4 +191,26 @@ SCENARIO("Leveling up from 1 to 4 by changing factions", "[level]")
     }
 }
 
+SCENARIO("Leveling affects Health", "[level]")
+{
+    GIVEN("A level 1 character")
+    {
+        auto stats = character_stats{level{1}};
+
+        THEN("He has Health 1000")
+        {
+            REQUIRE(stats.get_health() == character_health{1000});
+        }
+    }
+    GIVEN("A level 6 character")
+    {
+        auto stats = character_stats{level{6}};
+
+        THEN("He has Health 1500")
+        {
+            REQUIRE(stats.get_health() == character_health{1500});
+        }
+    }
+}
+
 } // namespace rpg_kata::tests

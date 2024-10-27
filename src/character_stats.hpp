@@ -38,7 +38,9 @@ public:
         , level{level}
         , total_received_damage{level > rpg_kata::level{1} ? level_2_threshold
                                                            : damage{non_negative_double{0}}}
-    {}
+    {
+        check_health();
+    }
 
     explicit character_stats(const character_health& health)
         : character_stats{health, rpg_kata::level{}}
@@ -47,13 +49,25 @@ public:
     explicit character_stats(const factions& factions)
         : level{to_level(factions)}
         , factions{factions}
-    {}
+    {
+        check_health();
+    }
 
     explicit character_stats(const character_health& health, const factions& factions)
         : health{health}
         , level{to_level(factions)}
         , factions{factions}
-    {}
+    {
+        check_health();
+    }
+
+    explicit character_stats(const level& level)
+        : level{level}
+        , total_received_damage{level > rpg_kata::level{1} ? level_2_threshold
+                                                           : damage{non_negative_double{0}}}
+    {
+        check_health();
+    }
 
     constexpr void take_damage(const damage& incoming_damage)
     {
@@ -70,7 +84,7 @@ public:
             && previous_total_received_damage < next_level_threshold
             && total_received_damage >= next_level_threshold)
         {
-            ++level;
+            level_up();
         }
     }
 
@@ -102,7 +116,22 @@ public:
 
         if (factions.get_total_size() >= next_level_threshold)
         {
-            ++level;
+            level_up();
+        }
+    }
+
+private:
+    void level_up()
+    {
+        ++level;
+        check_health();
+    }
+
+    void check_health()
+    {
+        if (level >= rpg_kata::level{6})
+        {
+            health.level_up();
         }
     }
 
