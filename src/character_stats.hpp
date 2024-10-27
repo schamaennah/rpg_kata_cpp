@@ -101,6 +101,10 @@ public:
         {
             level = rpg_kata::level{2};
         }
+        else if (factions.get_total_size() >= 6 && level < rpg_kata::level{3})
+        {
+            level = rpg_kata::level{3};
+        }
     }
 
 private:
