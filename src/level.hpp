@@ -17,7 +17,10 @@ constexpr level_diff operator-(const level& lhs, const level& rhs)
 
 constexpr level& operator++(level& self)
 {
-    ++self.value;
+    if (self < level{10})
+    {
+        ++self.value;
+    }
     return self;
 }
 

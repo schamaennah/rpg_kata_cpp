@@ -213,4 +213,25 @@ SCENARIO("Leveling affects Health", "[level]")
     }
 }
 
+SCENARIO("Leveling cannot go over 10", "[level]")
+{
+    GIVEN("A level 9 character")
+    {
+        auto stats = character_stats{level{9}};
+
+        WHEN("He joins many unique factions which should get him very well beyond level 10")
+        {
+            for (auto i = 0U; i < 100; ++i)
+            {
+                stats.join_faction({i});
+            }
+
+            THEN("He is still level 10")
+            {
+                REQUIRE(stats.get_level() == level{10});
+            }
+        }
+    }
+}
+
 } // namespace rpg_kata::tests
